@@ -2,4 +2,20 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+
+  if error
+    p(style="color:red") #{error}
+
+  form(method="post", action="/submit")
+    div
+      label(for="id") ID:
+      input#id(type="text", name="id", required)
+    div
+      label(for="role") Role:
+      select#role(name="role", required)
+        option(value="") -- choose role --
+        option(value="student") Student
+        option(value="teacher") Teacher
+        option(value="registrar") Registrar
+    div
+      button(type="submit") Go
