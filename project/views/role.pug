@@ -4,3 +4,23 @@ block content
   h1 Role: #{role}
   p ID: #{id}
   a(href="/") ← Back
+
+  // Part 2 
+  if !info 
+    p No information found for this ID. 
+  else 
+    if role === 'student'
+      h2 Student Information
+      p Name: #{info.name}
+      p Major: #{info.major}
+      p GPA: #{info.gpa}
+
+    if role === 'faculty'
+      h2 Faculty Information
+      p Name: #{info.name}
+      p Department: #{info.department}
+
+    if role === 'registrar'
+      h2 Registrar Information 
+      p Office Hours: #{info.officeHours}
+      p Location: #{info.location}
