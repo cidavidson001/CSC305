@@ -1,0 +1,81 @@
+doctype html
+html
+  head
+    title Student Add/Drop Courses
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      h1, h2 {
+        color: #333;
+      }
+      form {
+        margin-bottom: 30px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f7f7f7;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin: 10px 0 5px;
+      }
+      select {
+        width: 100%;
+        padding: 8px;
+      }
+      button {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #004999;
+      }
+
+  body
+    // If user is NOT a student
+    if userRole !== 'Student'
+      h1 Access Denied
+      p Only students are allowed to add or drop courses.
+      a(href="/") Return Home
+
+    // If user IS a student
+    else
+      h1 Student Course Management
+
+      // -----------------------------
+      // Add Course Form
+      // -----------------------------
+      h2 Add a Course
+      form(action="/add-course" method="POST")
+        label(for="courseToAdd") Choose a course to add:
+        select(name="courseToAdd" required)
+          option(value="" disabled selected) -- Select a Course --
+          each course in availableCourses
+            option(value=course.id)= `${course.id} - ${course.name}`
+
+        button(type="submit") Add Course
+
+      // -----------------------------
+      // Drop Course Form
+      // -----------------------------
+      h2 Drop a Course
+      if enrolledCourses.length === 0
+        p You are not enrolled in any courses.
+      else
+        form(action="/drop-course" method="POST")
+          label(for="courseToDrop") Choose a course to drop:
+          select(name="courseToDrop" required)
+            each course in enrolledCourses
+              option(value=course.id)= `${course.id} - ${course.name}`
+
+          button(type="submit") Drop Course
