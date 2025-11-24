@@ -1,0 +1,82 @@
+let availableCourses = [
+  { id: "CS101", name: "Intro to Computer Science" },
+  { id: "MATH210", name: "Calculus II" },
+  { id: "HIST110", name: "World History" },
+];
+
+let students = {
+  // Example structure
+  "student1": {
+    enrolled: [
+      { id: "ENG150", name: "English Composition" }
+    ]
+  }
+};
+
+// ===========================
+// ADD COURSE
+// ===========================
+app.post("/add-course", (req, res) => {
+  const user = req.session.userId || "student1";   // Example fallback
+  const role = req.session.role;
+
+  if (role !== "Student") {
+    return res.status(403).send("Only students can add courses.");
+  }
+
+  const courseId = req.body.courseToAdd;
+
+  // Find course in available list
+  const courseToAdd = availableCourses.find(c => c.id === courseId);
+  if (!courseToAdd) {
+    return res.status(400).send("Course not found.");
+  }
+
+  // Ensure student exists in data
+  if (!students[user]) {
+    students[user] = { enrolled: [] };
+  }
+
+  // Check if already enrolled
+  const alreadyEnrolled = students[user].enrolled.some(c => c.id === courseId);
+  if (alreadyEnrolled) {
+    return res.send("You are already enrolled in this course.");
+  }
+
+  // Add the course
+  students[user].enrolled.push(courseToAdd);
+
+  // Redirect back to the student course page
+  res.redirect("/student-courses");
+});
+
+// ===========================
+// DROP COURSE
+// ===========================
+app.post("/drop-course", (req, res) => {
+  const user = req.session.userId || "student1";   // Example fallback
+  const role = req.session.role;
+
+  if (role !== "Student") {
+    return res.status(403).send("Only students can drop courses.");
+  }
+
+  const courseId = req.body.courseToDrop;
+
+  if (!students[user] || !students[user].enrolled.length) {
+    return res.status(400).send("You are not enrolled in any courses.");
+  }
+
+  // Check if enrolled in the course
+  const index = students[user].enrolled.findIndex(c => c.id === courseId);
+
+  if (index === -1) {
+    return res.send("You are not enrolled in that course.");
+  }
+
+  // Drop the course
+  students[user].enrolled.splice(index, 1);
+
+  // Redirect back to course page
+  res.redirect("/student-courses");
+});
